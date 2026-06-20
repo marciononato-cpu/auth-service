@@ -1,0 +1,52 @@
+class Users::RegistrationsController < ApplicationController
+  skip_before_action :verify_authenticity_token, raise: false
+
+  def create
+    # Sanitização de input
+    email = user_params[:email]&.downcase
+    password = user_params[:password]
+    password_confirmation = user_params[:password_confirmation]
+
+    if !email || !password
+      render json: { errors: ['Dados incompletos'] }, status: :unprocessable_entity
+      return
+    end
+
+    if password != password_confirmation
+      render json: { errors: ['As senhas não coincidem'] }, status: :unprocessable_entity
+      return
+    end
+
+    if User.find_by(email: email)
+      # Mensagem genérica para não validar existência de emails
+      render json: { errors: ['Erro ao criar conta'] }, status: :unprocessable_entity
+      return
+    end
+
+    # Criação segura com Bcrypt
+    encrypted_pw = BCrypt::Password.create(password, cost: 12)
+    
+    user = User.create!(
+      email: email,
+      encrypted_password: encrypted_pw.to_s,
+      role: :user
+    )
+
+    user.send_confirmation_email
+    
+    render json: {
+      message: 'Conta criada! Verifique seu email para receber o código de confirmação.',
+      user: user.as_json(only: [:id, :email, :role])
+    }, status: :created
+    
+  rescue
+    # Retorna erro genérico para evitar vazamento de informações
+    render json: { errors: ['Erro interno no servidor'] }, status: :internal_server_error
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+end

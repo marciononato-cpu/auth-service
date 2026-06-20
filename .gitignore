@@ -1,0 +1,47 @@
+# .env files (environment variables)
+.env
+.env.production
+.env.staging
+
+# Rails master key and credentials
+config/master.key
+config/credentials.yml.enc
+config/credentials/production.yml.enc
+config/credentials/development.yml.enc
+
+# Ruby / Bundle
+Gemfile.lock
+vendor/bundle/
+
+# Logs
+log/
+
+# PID files
+tmp/
+pids/
+*.pid
+
+# Storage (database, uploads, cache)
+storage/
+tmp/storage/
+
+# Database
+*.sqlite3
+*.sqlite3-journal
+db/*.log
+
+# Docker
+.dockerenv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Nginx
+/var/www/html/
