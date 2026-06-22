@@ -58,9 +58,9 @@ RUN bundle exec bootsnap precompile -j 1 app/ lib/
 FROM base
 
 # Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
-USER 1000:1000
+RUN groupadd --system --gid 1001 rails && \
+    useradd rails --uid 1001 --gid 1001 --create-home --shell /bin/bash
+USER 1001:1001
 
 # Copy built artifacts: gems, application
 COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"

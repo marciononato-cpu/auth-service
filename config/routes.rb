@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post "users/confirm", to: "users/confirmations#create"
   post "users/confirm/resend", to: "users/confirmations#resend"
   get "users", to: "users#index"
+  delete "users/:id", to: "users#destroy"
   
   # Password reset routes
   post "passwords", to: "users/passwords#create"

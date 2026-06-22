@@ -1,0 +1,2 @@
+class AdminConfirmationsController < ApplicationController
+end

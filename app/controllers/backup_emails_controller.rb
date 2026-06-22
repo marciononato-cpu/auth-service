@@ -1,0 +1,2 @@
+class BackupEmailsController < ApplicationController
+end

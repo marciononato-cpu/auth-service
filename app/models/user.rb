@@ -36,6 +36,6 @@ class User < ApplicationRecord
   private
 
   def generate_confirmation_code
-    self.confirmation_code = SecureRandom.hex(4).upcase[0..7]
+    self.confirmation_code = rand(100000..999999).to_s
   end
 end

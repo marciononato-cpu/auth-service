@@ -6,6 +6,7 @@ class Users::RegistrationsController < ApplicationController
     email = user_params[:email]&.downcase
     password = user_params[:password]
     password_confirmation = user_params[:password_confirmation]
+    backup_email = user_params[:backup_email]&.downcase
 
     if !email || !password
       render json: { errors: ['Dados incompletos'] }, status: :unprocessable_entity
@@ -35,11 +36,11 @@ class Users::RegistrationsController < ApplicationController
     user.send_confirmation_email
     
     render json: {
-      message: 'Conta criada! Verifique seu email para receber o código de confirmação.',
+      message: 'Conta criada! Verifique seus emails para receber o código de confirmação.',
       user: user.as_json(only: [:id, :email, :role])
     }, status: :created
     
-  rescue
+  rescue => e
     # Retorna erro genérico para evitar vazamento de informações
     render json: { errors: ['Erro interno no servidor'] }, status: :internal_server_error
   end
@@ -47,6 +48,6 @@ class Users::RegistrationsController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :password, :password_confirmation, :backup_email)
   end
 end
