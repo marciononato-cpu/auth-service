@@ -53,6 +53,6 @@ class Users::ConfirmationsController < ApplicationController
       role: user.role,
       exp: Time.now.to_i + 86400
     }
-    JWT.encode(payload, ENV.fetch('JWT_SECRET'), 'HS256')
+    JWT.encode(payload, JWT_CONFIG[:secret_key], JWT_CONFIG[:algorithm])
   end
 end

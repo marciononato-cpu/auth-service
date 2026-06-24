@@ -12,4 +12,8 @@ Rails.application.routes.draw do
   post "passwords", to: "users/passwords#create"
   patch "passwords", to: "users/passwords#update"
   put "passwords", to: "users/passwords#update"
+
+  # OAuth routes
+  get "/auth/google_oauth2/callback", to: "omniauth_callbacks#google_oauth2"
+  get "/auth/apple/callback", to: "omniauth_callbacks#apple"
 end

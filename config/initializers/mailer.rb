@@ -8,8 +8,8 @@ Rails.application.configure do
     domain: "gmail.com",
     user_name: ENV.fetch("SMTP_USER"),
     password: ENV.fetch("SMTP_PASS"),
-    authentication: "plain",
-    enable_starttls_auto: true,
+    authentication: ENV.fetch("SMTP_AUTH", "plain").downcase.to_sym,
+    enable_starttls_auto: ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true").downcase == "true",
     open_timeout: 5,
     read_timeout: 5
   }

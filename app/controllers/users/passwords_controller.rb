@@ -36,7 +36,7 @@ class Users::PasswordsController < ApplicationController
     end
     
     user.update!(
-      encrypted_password: BCrypt::Password.create(reset_params[:password], cost: 12),
+      password: reset_params[:password],
       reset_password_token: nil,
       reset_password_sent_at: nil
     )

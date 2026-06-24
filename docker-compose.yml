@@ -1,38 +1,61 @@
+# ============================================================
+# Docker Compose — Ambiente Isolado (Dev/Staging)
+# ============================================================
+# Uso:
+#   docker compose up -d --build
+#   docker compose logs -f web
+#   docker compose down
+#
+# Isolamento da produção atual:
+#   - Rails:    host:3001 → container:3000  (produção usa 3000)
+#   - Postgres: host:5433 → container:5432  (produção usa 5432)
+#   - Redis:    host:6380 → container:6379  (produção usa 6379)
+# ============================================================
+
 services:
+  # === API RAILS ===
   web:
     build: .
-    command: ["sh", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"]
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
+    command: bundle exec rails server -b 0.0.0.0 -p 3000
     volumes:
-      - .:/rails
+      - .:/rails          # Mount do código (hot-reload em dev)
+      - bundle_cache:/usr/local/bundle
+    ports:
+      - "3001:3000"       # ← Acesso externo pela porta 3001
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=auth_dev_db
+      - DATABASE_USER=auth_dev
+      - DATABASE_PASSWORD=dev_secure_pass_123
+      - REDIS_URL=redis://redis:6379/0
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
     depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
+      - db
+      - redis
 
+  # === BANCO DE DADOS ===
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: auth_dev_db
+      POSTGRES_USER: auth_dev
+      POSTGRES_PASSWORD: dev_secure_pass_123
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"       # ← Acesso externo pela porta 5433
 
+  # === REDIS (Cache + Rate Limit + JWT Blacklist) ===
   redis:
     image: redis:7-alpine
     volumes:
-      - redisdata:/data
+      - redis_data:/data
+    ports:
+      - "6380:6379"       # ← Acesso externo pela porta 6380
 
 volumes:
-  postgres_data:
-  redisdata:
+  bundle_cache:
+  pg_data:
+  redis_data:

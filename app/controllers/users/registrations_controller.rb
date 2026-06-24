@@ -24,12 +24,10 @@ class Users::RegistrationsController < ApplicationController
       return
     end
 
-    # Criação segura com Bcrypt
-    encrypted_pw = BCrypt::Password.create(password, cost: 12)
-    
     user = User.create!(
       email: email,
-      encrypted_password: encrypted_pw.to_s,
+      password: password,
+      password_confirmation: password_confirmation,
       role: :user
     )
 

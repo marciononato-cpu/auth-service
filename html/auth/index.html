@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Painel de Controle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-page" class="login-container">
+    <div class="login-box">
+      <h1>🔐 Admin</h1>
+      <p>Acesso restrito a administradores</p>
+      <div id="login-error" class="error-msg hidden"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="admin@exemplo.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary" id="btn-login">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD (oculto até login) -->
+  <div id="dashboard-page" class="hidden">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-inner">
+        <div class="logo">Admin <span>Painel</span></div>
+        <div class="user-badge">
+          <span id="user-email"></span>
+          <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="container">
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total de Usuários</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-value" id="stat-confirmed">—</div>
+          <div class="stat-label">Confirmados</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-label">Pendentes</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="stat-admins">—</div>
+          <div class="stat-label">Administradores</div>
+        </div>
+      </div>
+
+      <!-- Usuários -->
+      <div class="users-section">
+        <div class="flex justify-between items-center" style="margin-bottom: 16px;">
+          <h2>Usuários Cadastrados</h2>
+          <input type="text" class="search-box" id="search-box" placeholder="Buscar por email..." style="width: 300px; margin-bottom: 0;">
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr>
+                <td colspan="6" class="loading"><div class="spinner"></div> Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="pagination" class="flex justify-between items-center mt-4 text-sm text-muted"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

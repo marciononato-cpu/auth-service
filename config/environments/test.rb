@@ -20,7 +20,11 @@ Rails.application.configure do
 
   # Show full error reports.
   config.consider_all_requests_local = true
-  config.cache_store = :null_store
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+    expires_in: 1.hour,
+    pool: { size: 5, timeout: 5 }
+  }
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
